@@ -1,0 +1,102 @@
+
+a) Memory usage seems a bit odd in mod_reslog.
+
+   This may be due to the fact that it's quite common that after a process
+   allocates some memory with malloc(3) and then releases it with free(3), the
+   memory is still mapped.  So, there is not much mod_reslog can do about it.
+
+   What you may want to check in your log processing script is which requests
+   caused an increase in rss/drss (see getrlimit(2) manpage for details on rss
+   and drss).
+
+b) I'm not getting any logs in apache's error log.
+
+   This may be due to having LogLevel set to a value with higher priority than
+   the one specified by ResourceLogLevel.
+
+   Example:
+     LogLevel warn
+     ResourceLogEnable on
+     ResourceLog error_log
+     ResourceLogLevel info
+
+   This setup will cause mod_reslog to send the log line with the profiling
+   information, but it will get filtered out by Apache, as it has LogLevel
+   set to warn (and the mod_reslog's messages are sent with "info").
+
+   The order of the levels are:
+   debug, info, notice, warn, error, crit, alert, emerg.
+
+   If this is the case, there are a couple of choices:
+    - change ResourceLogLevel
+    - use a CustomLog setting
+    - use syslog
+
+c) I'm logging to syslog, but some messages are not sent.
+
+   Normally, syslog merges duplicate messages.  So, if mod_reslog is
+   generating tons of logs, syslog may filter them out.
+
+   Newer syslog servers let you set the rate limit.
+
+d) I'm getting LOTS of lines from mod_reslog, help!
+
+   Don't panic!
+
+   The first thing that should be checked is that if there are any thresholds
+   set.
+
+   Thresholds let you set the minimum CPU/memory that has to be reached for a
+   request to get logged.  Bear in mind that CPU thresholds are set in seconds,
+   so you should set it to something below 1.
+
+   What I recommend:
+
+     LogCPUThresold self user 0.01
+     LogCPUThresold self system 0.001
+     LogMEMThresold self total 1000000
+
+e) What's "self", "user", "system", etc?
+
+   Simply:
+     - "self": resources (CPU/memory) used by the process itself.
+     - "child": resources (CPU/memory) used by the child process(es).
+
+     - "user": CPU used by the process(es) (self or child) itself.
+     - "system": CPU used by the kernel when it's working on behalf of the
+       process.
+
+   Practical examples:
+   
+    Running PHP as CGI
+    ==================
+    
+    This means that for each PHP request, a new process is created, so:
+
+      - self.user: CPU Used by httpd (like, parsing the request, processing
+        mod_rewrite's rules, etc).  This is most of the times negligible.
+
+      - self.system: CPU used by each of the open(2) calls for .htaccess
+        files, accepting new connections, etc.
+
+      - child.user: CPU used by PHP itself.
+
+      - child.system: CPU used by the kernel when it's asked to do something
+        from the PHP script (say, open a file/folder, write something to some
+        open file, etc).
+
+    Running PHP as module:
+    =====================
+       - self and child here would be identical, unless you execute some
+         external command from PHP (with system, exec, etc).
+
+       - user: CPU used for processing the request (like processing
+         mod_rewrite's rules) AND used by PHP to execute the script.
+
+       - system: overall CPU used by the kernel for tasks like opening files.
+        
+    Running PHP as FCGID:
+    ====================
+       In this case, the figure will only tell you how good/bad apache is
+       behaving, not how good/bad the PHP scripts are.
+

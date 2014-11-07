@@ -1,0 +1,15 @@
+Source: libapache2-mod-reslog
+Priority: optional
+Maintainer: Gonzalo A. Arana <gonzalo.arana@gmail.com>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.1
+Section: libs
+
+Package: libapache2-mod-reslog
+Section: web
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CPU usage on apache request.
+ mod_reslog let you log CPU usage on each request.
+ .
+ Handy for a busy web server.

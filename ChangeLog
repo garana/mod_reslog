@@ -1,0 +1,17 @@
+mod_reslog 0.2
+
+  * Bugfix in ResourceLogLevel facility.level parsing.  facility and level
+    were reversed and digits were not allowed in facility (so, local0-7 were
+    not allowed).
+  * Replace tne odd behaving directive ResourceLogSyslog with ResourceLog.
+  * Fix LogCPUThresold error message - it's "system", not "sys".
+  * Bugfix - CustomLog tags to not to have any of the optional format chars.
+
+ -- Gonzalo a. Arana <gonzalo.arana@gmail.com>  Thu,  6 Nov 2014 22:03:04 -0300
+
+mod_reslog 0.1
+
+  * Initial release.
+
+ -- Gonzalo a. Arana <gonzalo.arana@gmail.com>  Wed, 27 Sep 2006 16:08:52 -0300
+

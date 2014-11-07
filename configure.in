@@ -1,0 +1,59 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+AC_INIT([mod_reslog], [0.1], [gonzalo.arana@gmail.com])
+AC_CONFIG_AUX_DIR(cfgaux)
+AC_CONFIG_SRCDIR([mod_reslog.c])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADER([config.h])
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+
+# Checks for libraries.
+
+# Checks for header files.
+AC_CHECK_HEADERS([sys/time.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_HEADER_STDC
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([strcasecmp strerror strtol])
+
+##############################################################################
+
+APXS_FOUND=
+AC_MSG_CHECKING(for 'apxs')
+AC_ARG_WITH([apxs],
+	AS_HELP_STRING([--with-apxs],[the path to the 'apxs' tool]),
+	[APXS=$withval],
+	[APXS="/usr/sbin/apxs /usr/bin/apxs2"])
+
+for i in ${APXS}; do
+	if test -x $i; then
+		APXS=$i
+		APXS_FOUND=1
+	fi
+done
+
+if test -z "${APXS_FOUND}"; then
+	AC_MSG_ERROR([could not be found.  Please specify a valid path to 'apxs'.])
+else
+	AC_MSG_RESULT([found '${APXS}'])
+fi
+
+##############################################################################
+
+AC_SUBST(APACHE_LOCATION)
+AC_SUBST(APXS)
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

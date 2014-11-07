@@ -1,0 +1,9 @@
+
+ o Add sample config file.
+ o Add a Makefile test.
+ o check if mallinfo(3) values provide useful data.
+ o check RSS & DRSS logging (Linux' getrusage(2) return always 0).
+ o Allow different limits with SetEnvIf??
+ o Are all those facilities really needed??
+ o Test on different platforms (only Linux tested so far).
+
