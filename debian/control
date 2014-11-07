@@ -1,7 +1,7 @@
 Source: libapache2-mod-reslog
 Priority: optional
 Maintainer: Gonzalo A. Arana <gonzalo.arana@gmail.com>
-Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: debhelper (>= 4.0.0), apache2-prefork-dev
 Standards-Version: 3.6.1
 Section: libs
 
