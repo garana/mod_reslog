@@ -1,3 +1,15 @@
+
+libapache2-mod-reslog (0.2-1) unstable; urgency=low
+
+  * Bugfix in ResourceLogLevel facility.level parsing.  facility and level
+    were reversed and digits were not allowed in facility (so, local0-7 were
+    not allowed).
+  * Replace tne odd behaving directive ResourceLogSyslog with ResourceLog.
+  * Fix LogCPUThresold error message - it's "system", not "sys".
+  * Bugfix - CustomLog tags to not to have any of the optional format chars.
+
+ -- Gonzalo A. Arana <gonzalo.arana@gmail.com>  Fri, 07 Nov 2014 15:51:24 -0300
+
 libapache2-mod-reslog (0.1-1) unstable; urgency=low
 
   * Initial Release.
