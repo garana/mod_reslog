@@ -34,9 +34,10 @@ Both tags ('M' & 'c') also support these characters in their format:
  * 'T' ('total'): logs resource usage by apache process per-se and all child processes it may have created.
 
 Example:
-
-   LogFormat "%a %u %v %{Host}i %U%q %f %>s %D %{Su}c %{St}c %ct %{S}M" resource
-   CustomLog "/var/log/apache2/resource.log" resource
+```
+  LogFormat "%a %u %v %{Host}i %U%q %f %>s %D %{Su}c %{St}c %ct %{S}M" resource
+  CustomLog "/var/log/apache2/resource.log" resource
+```
 
  Will log:
    * self-usermode cpu usage ("%{Su}c").
@@ -48,23 +49,31 @@ Logging to Apache error log and/or syslog:
 
 To use only the CustomLog tags:
 
+```
     ResourceLogEnable on
+```
 
 To enable apache's error log:
 
+```
     ResourceLogEnable on
     ResourceLog error_log
+```
 
 To enable logging via syslog:
 
+```
     ResourceLogEnable on
     ResourceLog syslog
+```
 
 To use both syslog and apache's error_log, and possibly the CustomLog tags:
 
+```
     ResourceLogEnable on
     ResourceLog syslog
     ResourceLog error_log
+```
 
 Don't log light requests:
 ------------------------
@@ -97,13 +106,17 @@ Enable or disable mod_reslog.
 If the module is disabled, none of the CustomLog tags, apache's error log and syslog
 will work.
 This has to be enabled if you plan to use this module at all.
+```
   ResourceLogEnable (on|off)
+```
 
 ### ResourceLog
 
  Specify mod_reslog specific logging: either apache's error log or syslog.
  Can be specified more than once
-ResourceLog  (syslog|error_log)
+```
+  ResourceLog (syslog|error_log)
+```
 
 ### ReourceLogLevel
 
@@ -126,9 +139,11 @@ So, ResourceLogLevel should be higher than LogLevel (by "higher" I mean more "cr
   ResourceLogLevel [facility.]level
 
 Examples:
+```
   ResourceLogLevel notice
   ResourceLogLevel local4.notice
   LogLevel notice  # can also use info or debug, or the messages will get filtered out by apache.
+```
 
 ### ResourceLogString
 Let you specify a string that will be included in every line.  This is to ease Apache error log/syslog grepping.
@@ -137,8 +152,10 @@ Let you specify a string that will be included in every line.  This is to ease A
 ### Loggin thresholds:
 Let you specify minimum values a request must exceed in order to get logged on Apache error log or syslog. Has no efect on CustomLog logging.
 
+```
 LogCPUThresold (self|child|total) (user|system|total) seconds
 LogMEMThresold (self|child|total) (rss|data|total) bytes
+```
 
 Where:
  * 'seconds' may have fractional (you may log requests that took over 1ms of cpu time).
@@ -149,6 +166,7 @@ A request will be logged if it satisfies any of the conditions imposed by these 
 Apache configuration example:
 -----------------------------
 
+```
 <IfModule mod_reslog.c>
      # Enable the resource usage collection, and CustomLog tags.
      ResourceLogEnable on
@@ -171,6 +189,7 @@ Apache configuration example:
      LogCPUThresold self system 0.001
      LogMEMThresold self total 1000000
 </IfModule>
+```
 
 Brief:
  * Module is enabled, and
@@ -179,11 +198,13 @@ Brief:
  * Resource usage will sill be calculcated and will be available to mod_log_config (and reported via syslog as well).
  * Lines like this would appear in apache ErrorLog (line is wrapped for readability):
 
-> [Fri Apr 28 11:48:09 2006] [info] [REQUEST_RESOURCE_USAGE]
-> 	your-host/apache2-default/index.html.en 
-> 	/var/www/apache2-default/index.html.en
-> 	self 0.004999u 0.001999s 0.006998t
-> 	total 0.004999u 0.001999s 0.006998t
+```
+[Fri Apr 28 11:48:09 2006] [info] [REQUEST_RESOURCE_USAGE]
+	your-host/apache2-default/index.html.en 
+	/var/www/apache2-default/index.html.en
+	self 0.004999u 0.001999s 0.006998t
+	total 0.004999u 0.001999s 0.006998t
+```
 
 Guide
 -----
@@ -207,9 +228,11 @@ The distinction of self|child|total:
 
 Also, you will want to avoid flooding your logs with extremely light requests, so I recommend having:
 
+```
      LogCPUThresold self user 0.01
      LogCPUThresold self system 0.001
      LogMEMThresold self total 1000000
+```
 
 You will want to tune the values above to match your requirements.
 
